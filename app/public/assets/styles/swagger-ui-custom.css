@@ -1,0 +1,56 @@
+@media only screen and (prefers-color-scheme: dark) {
+    .swagger-ui .info .base-url,
+    .swagger-ui .info .title,
+    .swagger-ui .info h1,
+    .swagger-ui .info h2,
+    .swagger-ui .info h3,
+    .swagger-ui .info h4,
+    .swagger-ui .info h5,
+    .swagger-ui .info li,
+    .swagger-ui .info p,
+    .swagger-ui .info table {
+        text-align: center;
+    }
+}
+
+.swagger-ui .topbar,
+a.link,
+.float-right,
+.try-out,
+.models {
+    display: none !important;
+}
+
+.swagger-ui [class$="title"] {
+    color: white !important;
+}
+
+.swagger-ui [class$="primary"] {
+    color: #7a9b27 !important;
+}
+
+input[type="text"] {
+    border: none !important;
+    cursor: default !important;
+}
+
+html {
+    background-image: url("/assets/images/background.jpg") !important;
+    background-attachment: fixed !important;
+}
+
+body {
+    background-color: rgba(31, 31, 31, 0.9) !important;
+    background-blend-mode: darken !important;
+}
+
+.scheme-container {
+    background-color: rgba(0, 0, 0, 0) !important;
+    box-shadow: none !important;
+}
+
+.swagger-ui .info hgroup.main {
+    display: block !important;
+    margin: 0 auto !important;
+    width: 117px !important;
+}

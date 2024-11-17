@@ -1,0 +1,155 @@
+#
+# The OpenAPI version.
+#
+# Since we're using the most recent version of OpenAPI,
+#  this version should be at least 3.1.X.
+#
+openapi: 3.1.0
+
+#
+# The API information which includes (but is not limited to):
+#     Title
+#     Description
+#     Version
+#
+info:
+    title: My API
+    description: My API description.
+    version: 1.0.0
+
+#
+# You can declare your various API servers here, this is mainly
+#  used for testing out queries and seeing the live response.
+#
+# If you're not attaching this to a real API server, then this
+#  portion of the YAML file can be omitted.
+#
+servers:
+    - url: http://127.0.0.1/api/v1
+      description: My API
+
+#
+# Each path in the API is declared in this YAML block.
+# Be sure to read the OpenAPI reference guide for additional assistance:
+#     https://swagger.io/docs/specification/v3_0/paths-and-operations/
+#
+paths:
+    /users/{uid}:
+        get:
+            summary: Retrieve user by ID.
+            operationId: getUserById
+            tags:
+                - Users
+            parameters:
+                - $ref: "#/components/schemas/uid"
+                - $ref: "#/components/schemas/authorization"
+            responses:
+                "200":
+                    description: Successful response.
+                    $ref: "#/components/schemas/getUser"
+                "401":
+                    $ref: "#/components/schemas/HTTP401"
+                "403":
+                    $ref: "#/components/schemas/HTTP403"
+                "429":
+                    $ref: "#/components/schemas/HTTP429"
+        delete:
+            summary: Delete user by ID.
+            operationId: deleteUserById
+            tags:
+                - Users
+            parameters:
+                - $ref: "#/components/schemas/uid"
+                - $ref: "#/components/schemas/authorization"
+            responses:
+                "200":
+                    description: Successful response.
+                    $ref: "#/components/schemas/deleteUser"
+                "401":
+                    $ref: "#/components/schemas/HTTP401"
+                "403":
+                    $ref: "#/components/schemas/HTTP403"
+                "429":
+                    $ref: "#/components/schemas/HTTP429"
+
+#
+# This portion contains our references
+#  which can be treated as templates.
+#
+components:
+    schemas:
+        authorization:
+            in: header
+            description: Authorization Token
+            name: X-Bearer-Token
+            schema:
+                type: string
+            required: true
+
+        uid:
+            in: path
+            description: User ID
+            name: uid
+            schema:
+                type: integer
+            required: true
+
+        user:
+            type: object
+            properties:
+                userid:
+                    type: integer
+                    description: The identifier of the user account.
+                username:
+                    type: string
+                    description: The name of the user account.
+                creation:
+                    type: integer
+                    description: The UNIX timestamp of when the account was created.
+                access:
+                    type: integer
+                    description: The privilege level of the account.
+                email:
+                    type: string
+                    description: The e-mail address associated with the account.
+
+        getUser:
+            type: object
+            allOf:
+                - $ref: "#/components/schemas/user"
+            example:
+                userid: 1
+                username: "admin"
+                creation: 1731820688
+                access: 0x4000
+                email: "admin@local.host"
+
+        deleteUser:
+            type: object
+            properties:
+                status:
+                    type: string
+                    enum: ["success", "failure"]
+                    description: The response status of the query.
+
+        HTTP401:
+            description: Missing or invalid authorization token.
+
+        HTTP403:
+            description: Unauthorized access to API endpoint.
+
+        HTTP429:
+            description: Too many requests in specified time window.
+            headers:
+                X-RateLimit-Limit:
+                    description: Request limit in specified time window.
+                    schema:
+                        type: integer
+                X-RateLimit-Remaining:
+                    description: Number of requests remaining in time window.
+                    schema:
+                        type: integer
+                X-RateLimit-Reset:
+                    description: Number of seconds until current rate limit window resets.
+                    schema:
+                        type: integer
