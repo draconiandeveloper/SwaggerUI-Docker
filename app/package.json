@@ -1,0 +1,18 @@
+{
+    "name": "openapi",
+    "version": "1.0.0",
+    "main": "public/index.js",
+    "scripts": {
+        "start:express": "node public/index.js",
+        "start": "nodemon"
+    },
+    "author": "DraconianDeveloper",
+    "license": "0BSD",
+    "description": "A simple Docker template for those wanting to experiment with OpenAPI and Swagger UI.",
+    "dependencies": {
+        "dotenv": "^16.4.5",
+        "express": "^4.21.1",
+        "http": "^0.0.1-security",
+        "pug": "^3.0.3"
+    }
+}

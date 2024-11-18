@@ -1,0 +1,28 @@
+FROM node:iron-alpine
+
+#
+# Firstly, we create the directory that will store our web application files.
+# Then we copy over the files from our host system into the Docker guest container.
+# Then we assign the current working directory to the web application directory in the guest container.
+#
+RUN mkdir -p /var/www/app
+COPY app/ /var/www/app
+WORKDIR /var/www/app
+
+#
+# Then we ensure that everything is up-to-date within the Docker guest container running Alpine Linux.
+# From there we will enter the web application directory and install all NPM dependencies.
+#
+RUN apk update && apk upgrade
+RUN cd /var/www/app
+
+RUN npm install -g nodemon
+RUN npm install
+
+#
+# We will make TCP port 8080 accessible from outside the Docker guest container.
+# This will allow for us to connect to the web server through a web browser on the host system.
+# We end off the Dockerfile by executing NPM to start the Nodemon application which reloads on file updates.
+#
+EXPOSE 8080
+CMD ["npm", "start"]

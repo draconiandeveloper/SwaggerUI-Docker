@@ -1,0 +1,55 @@
+#
+# This version entry will throw up a deprecation warning on recent versions of docker-compose.
+# So the only reason to specify the docker-compose YML version is for the sake of backwards compatibility.
+#
+version: "3.0"
+
+#
+# We only really need a single service container because there's no database to keep track of
+#  and NodeJS will serve as our backend while Express will serve as our HTTP server.
+#
+services:
+    webserver:
+        #
+        # The context is the directory that stores our "Dockerfile-website" file.
+        #
+        build:
+            context: .
+            dockerfile: Dockerfile-website
+
+        #
+        # This makes it easier for the "getip.sh" script to retrieve the IP address of the container.
+        #
+        container_name: openapi-webserver
+
+        #
+        # Since we're exposing port 8080 to prevent collisions with any potential web servers running
+        #  on the host system. The first value will be port that the host system sees.
+        #
+        # If there's any other server running on port 8080, then this value can be changed.
+        #
+        # The second value is the guest port and it can stay the same since there's nothing else
+        #  running on port 8080 from within the docker container.
+        #
+        ports:
+            - "8080:8080"
+
+        #
+        # We will be needing some form of access to the contents of the docker container.
+        # So we're going to map the "app" directory on the host system to "/var/www/app" on the guest system.
+        #
+        volumes:
+            - "./app:/var/www/app/"
+
+        #
+        # This portion allows us to run "docker-compose watch" and mirror all updates to the host app files
+        #  to the guest app files, and then Nodemon will relaunch the Express server and the updates will
+        #  be reflected on the web server.
+        #
+        # This allows for us to make changes and see those changes take effect on-the-fly.
+        #
+        develop:
+            watch:
+                - action: sync+restart
+                  path: ./app
+                  target: /var/www/app
